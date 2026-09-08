@@ -45,9 +45,15 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug
 
+      # Yeni Adım: APK Dosyasının Adını Değiştir
+      - name: Rename APK
+        run: |
+          mv android/app/build/outputs/apk/debug/app-debug.apk android/app/build/outputs/apk/debug/IstanbulSende.apk
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: istanbul-sende-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          # Path alanını yeni dosya adıyla güncelledik
+          path: android/app/build/outputs/apk/debug/IstanbulSende.apk
           
