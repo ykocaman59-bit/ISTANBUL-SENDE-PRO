@@ -1,4 +1,4 @@
-Name: Build Android APK
+name: Build Android APK
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
 
       - name: Generate App Icons
         run: |
-          npx @capacitor/assets generate --android
+          npx --yes @capacitor/assets generate --android
           npx cap sync android
 
       - name: Setup Java JDK
