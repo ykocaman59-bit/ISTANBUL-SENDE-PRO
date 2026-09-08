@@ -29,7 +29,7 @@
 
         .app-container {
             width: 100%;
-            max-width: 430px; /* Mobil ekran genişliği */
+            max-width: 430px;
             height: 100vh;
             max-height: 932px;
             background: linear-gradient(180deg, #0a1128 0%, #030712 100%);
@@ -152,7 +152,6 @@
             flex: 1;
         }
 
-        /* Ana Sayfa Grid (2'li Yan Yana) */
         .grid-menu {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -198,7 +197,6 @@
             color: #f1f5f9;
         }
 
-        /* Liste Şeklindeki Alt Menü Butonları */
         .list-menu {
             display: flex;
             flex-direction: column;
@@ -240,7 +238,6 @@
             color: #64748b;
         }
 
-        /* Full Genişlik Özel Buton (Acil İletişim vb.) */
         .full-card {
             grid-column: span 2;
             background: linear-gradient(90deg, #881337 0%, #4c0519 100%);
@@ -250,7 +247,6 @@
             margin-top: 5px;
         }
 
-        /* Acil Çağrı Özel Tasarım */
         .emergency-card {
             background: linear-gradient(90deg, #991b1b 0%, #450a0a 100%);
             border: 1px solid rgba(239, 68, 68, 0.4);
@@ -274,7 +270,7 @@
             color: #fca5a5;
         }
 
-        /* Renk Paletleri (Görsele Uygun Accent Renkler) */
+        /* Renk Paletleri */
         .bg-orange { background: linear-gradient(135deg, #f97316, #ea580c); }
         .bg-blue   { background: linear-gradient(135deg, #3b82f6, #2563eb); }
         .bg-pink   { background: linear-gradient(135deg, #ec4899, #db2777); }
@@ -284,7 +280,6 @@
         .bg-red    { background: linear-gradient(135deg, #ef4444, #dc2626); }
         .bg-indigo { background: linear-gradient(135deg, #6366f1, #4f46e5); }
 
-        /* --- HARİTA ALANI --- */
         #map {
             width: 100%;
             height: 380px;
@@ -294,12 +289,10 @@
             z-index: 1;
         }
 
-        /* LEAFLET SİYAH TEMA FİLTRESİ */
         .leaflet-tile-container {
             filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3);
         }
 
-        /* FOOTER DEKORASYON */
         .footer-text {
             text-align: center;
             font-size: 11px;
@@ -378,14 +371,15 @@
         </div>
         <div class="content">
             <div class="list-menu">
-                <a href="https://www.istanbuleczaneleri.org/" target="_blank" class="list-card">
+                <!-- Sultanbeyli Nöbetçi Eczane Bağlantısı -->
+                <a href="https://www.eczaneler.gen.tr/nobetci-istanbul-sultanbeyli" target="_blank" class="list-card">
                     <div class="list-left">
                         <div class="icon-box bg-red"><i class="fa-solid fa-pills"></i></div>
                         <span>Nöbetçi Eczane</span>
                     </div>
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </a>
-                <a href="https://www.google.com/maps/search/nöbetçi+eczane+istanbul" target="_blank" class="list-card">
+                <a href="https://www.google.com/maps/search/nöbetçi+eczane+istanbul+sultanbeyli" target="_blank" class="list-card">
                     <div class="list-left">
                         <div class="icon-box bg-green"><i class="fa-solid fa-map-pin"></i></div>
                         <span>Eczane Haritası</span>
@@ -441,7 +435,8 @@
                     </div>
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </a>
-                <a href="https://marmaray.gov.tr/" target="_blank" class="list-card">
+                <!-- Marmaray Saatleri Güncellendi -->
+                <a href="https://marmaray.istanbul/marmaray-saatleri/" target="_blank" class="list-card">
                     <div class="list-left">
                         <div class="icon-box bg-purple"><i class="fa-solid fa-train"></i></div>
                         <span>Marmaray Sefer Saatleri</span>
@@ -469,21 +464,24 @@
         </div>
         <div class="content">
             <div class="list-menu">
-                <a href="https://uym.ibb.gov.tr/" target="_blank" class="list-card">
+                <!-- MOBESE Kameralar Güncellendi -->
+                <a href="https://uym.ibb.gov.tr/yharita6/" target="_blank" class="list-card">
                     <div class="list-left">
                         <div class="icon-box bg-pink"><i class="fa-solid fa-video"></i></div>
                         <span>Canlı MOBESE / Kameralar</span>
                     </div>
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </a>
-                <a href="https://uym.ibb.gov.tr/yol-durumu/" target="_blank" class="list-card">
+                <!-- İBB Yoğunluk Trafik Haritası Güncellendi -->
+                <a href="https://istanbul.yogunlukharitasi.com/" target="_blank" class="list-card">
                     <div class="list-left">
                         <div class="icon-box bg-red"><i class="fa-solid fa-map-location"></i></div>
                         <span>İBB Yoğunluk Trafik Haritası</span>
                     </div>
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </a>
-                <a href="https://www.ibb.istanbul/duyurular" target="_blank" class="list-card">
+                <!-- İBB Yol ve Ulaşım Duyuruları Güncellendi -->
+                <a href="https://ibb.istanbul/gundem/duyurular/" target="_blank" class="list-card">
                     <div class="list-left">
                         <div class="icon-box bg-indigo"><i class="fa-solid fa-bullhorn"></i></div>
                         <span>İBB Yol ve Ulaşım Duyuruları</span>
@@ -495,7 +493,7 @@
     </div>
 
     <!-- ================= BELEDİYE HİZMETLERİ ================= -->
-     <div id="page-belediye" class="page">
+    <div id="page-belediye" class="page">
         <div class="header-banner" style="background-image: url('https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=800');">
             <div class="top-nav">
                 <div class="back-btn" onclick="navigateTo('page-home')"><i class="fa-solid fa-chevron-left"></i></div>
@@ -518,7 +516,8 @@
                     </div>
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </a>
-                <a href="https://www.hgsmusteri.ptt.gov.tr/" target="_blank" class="list-card">
+                <!-- HGS / OGS Bakiye Sorgulama Güncellendi -->
+                <a href="https://hgsmusteri.ptt.gov.tr/mobil/hgs.jsf" target="_blank" class="list-card">
                     <div class="list-left">
                         <div class="icon-box bg-orange"><i class="fa-solid fa-car"></i></div>
                         <span>HGS / OGS Bakiye Sorgulama</span>
@@ -546,7 +545,6 @@
         </div>
         <div class="content">
             <div class="list-menu">
-                <!-- Avrupa Yakası -->
                 <a href="https://www.google.com/maps/search/Ayasofya-i+Kebir+Cami-i+Şerifi" target="_blank" class="list-card">
                     <div class="list-left"><div class="icon-box bg-purple"><i class="fa-solid fa-mosque"></i></div><span>Ayasofya-i Kebir Cami</span></div>
                     <i class="fa-solid fa-chevron-right arrow"></i>
@@ -575,7 +573,6 @@
                     <div class="list-left"><div class="icon-box bg-purple"><i class="fa-solid fa-mountain"></i></div><span>Pierre Loti Tepesi</span></div>
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </a>
-                <!-- Anadolu Yakası -->
                 <a href="https://www.google.com/maps/search/Kız+Kulesi" target="_blank" class="list-card">
                     <div class="list-left"><div class="icon-box bg-cyan"><i class="fa-solid fa-synagogue"></i></div><span>Kız Kulesi (Üsküdar)</span></div>
                     <i class="fa-solid fa-chevron-right arrow"></i>
@@ -690,7 +687,7 @@
 
 </div>
 
-<!-- Leaflet JavaScript (Harita Çalışması İçin) -->
+<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
@@ -705,17 +702,20 @@
             targetPage.scrollTop = 0;
         }
 
-        // Harita sayfasına girildiyse haritayı yükle/yenile
         if (pageId === 'page-harita') {
             setTimeout(initMap, 200);
         }
     }
 
+    // İlk yüklemede Ana Sayfayı Aç (404 / Boş ekran hatasını çözer)
+    document.addEventListener("DOMContentLoaded", function() {
+        navigateTo('page-home');
+    });
+
     // --- LEAFLET İNTERAKTİF HARİTA KURULUMU ---
     let mapInitialized = false;
     let map;
 
-    // Anadolu ve Avrupa Yakasındaki Gezilecek Noktalar
     const poiList = [
         { name: "Ayasofya-i Kebir Cami", lat: 41.0086, lng: 28.9802 },
         { name: "Topkapı Sarayı", lat: 41.0115, lng: 28.9833 },
@@ -732,7 +732,6 @@
 
     function initMap() {
         if (!mapInitialized) {
-            // İstanbul merkezli harita başlatma
             map = L.map('map').setView([41.015137, 28.979530], 11);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -740,7 +739,6 @@
                 attribution: '© OpenStreetMap'
             }).addTo(map);
 
-            // Tüm gezilecek yerleri pinleme
             poiList.forEach(poi => {
                 L.marker([poi.lat, poi.lng])
                     .addTo(map)
@@ -756,3 +754,4 @@
 
 </body>
 </html>
+                 
