@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>İSTANBUL SENDE</title>
+    <!-- FontAwesome İkonları -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet.js Harita Kütüphanesi -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        /* --- GENEL SIFIRLAMA VE ARAYÜZ TEMASI --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #050a14;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 430px; /* Mobil ekran genişliği */
+            height: 100vh;
+            max-height: 932px;
+            background: linear-gradient(180deg, #0a1128 0%, #030712 100%);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            border-radius: 0px;
+        }
+
+        @media (min-width: 480px) {
+            .app-container {
+                height: 90vh;
+                border-radius: 35px;
+                border: 4px solid #1e293b;
+            }
+        }
+
+        /* --- SAYFA YAPISI --- */
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease-in-out;
+            transform: translateX(30px);
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+
+        .page.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0);
+        }
+
+        /* --- HEADER / BANNER ALANI --- */
+        .header-banner {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+            box-shadow: inset 0 -40px 40px #0a1128;
+        }
+
+        .header-banner::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(10, 17, 40, 0.2) 0%, rgba(10, 17, 40, 0.95) 100%);
+        }
+
+        .header-title {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+        }
+
+        .header-title p {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        /* --- GERİ BUTONU & ÜST BAŞLIK --- */
+        .top-nav {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: transparent;
+        }
+
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+        }
+
+        .page-header-title {
+            margin-left: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- MENÜ İÇERİK & GRID SİSTEMİ --- */
+        .content {
+            padding: 15px 20px;
+            flex: 1;
+        }
+
+        /* Ana Sayfa Grid (2'li Yan Yana) */
+        .grid-menu {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .grid-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 15px 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .grid-card:active {
+            transform: scale(0.96);
+            background: rgba(51, 65, 85, 0.8);
+        }
+
+        .icon-box {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #fff;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .grid-card span {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.2;
+            color: #f1f5f9;
+        }
+
+        /* Liste Şeklindeki Alt Menü Butonları */
+        .list-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .list-card {
+            background: linear-gradient(90deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .list-card:active {
+            transform: scale(0.98);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .list-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .list-left span {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .list-card i.arrow {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* Full Genişlik Özel Buton (Acil İletişim vb.) */
+        .full-card {
+            grid-column: span 2;
+            background: linear-gradient(90deg, #881337 0%, #4c0519 100%);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            justify-content: center;
+            padding: 16px;
+            margin-top: 5px;
+        }
+
+        /* Acil Çağrı Özel Tasarım */
+        .emergency-card {
+            background: linear-gradient(90deg, #991b1b 0%, #450a0a 100%);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .emergency-card .num {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .emergency-card .desc {
+            font-size: 12px;
+            color: #fca5a5;
+        }
+
+        /* Renk Paletleri (Görsele Uygun Accent Renkler) */
+        .bg-orange { background: linear-gradient(135deg, #f97316, #ea580c); }
+        .bg-blue   { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .bg-pink   { background: linear-gradient(135deg, #ec4899, #db2777); }
+        .bg-green  { background: linear-gradient(135deg, #10b981, #059669); }
+        .bg-purple { background: linear-gradient(135deg, #a855f7, #9333ea); }
+        .bg-cyan   { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+        .bg-red    { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .bg-indigo { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+
+        /* --- HARİTA ALANI --- */
+        #map {
+            width: 100%;
+            height: 380px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 15px;
+            z-index: 1;
+        }
+
+        /* LEAFLET SİYAH TEMA FİLTRESİ */
+        .leaflet-tile-container {
+            filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3);
+        }
+
+        /* FOOTER DEKORASYON */
+        .footer-text {
+            text-align: center;
+            font-size: 11px;
+            color: #475569;
+            margin-top: 15px;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- ================= ANA SAYFA ================= -->
+    <div id="page-home" class="page active">
+        <div class="header-banner" style="background-image: url('https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?q=80&w=800');">
+            <div class="header-title">
+                <h1>İSTANBUL SENDE</h1>
+                <p>Şehrin tüm ihtiyaçları tek uygulamada!</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="grid-menu">
+                <div class="grid-card" onclick="navigateTo('page-gunluk')">
+                    <div class="icon-box bg-orange"><i class="fa-solid fa-city"></i></div>
+                    <span>Günlük Yaşam</span>
+                </div>
+                <div class="grid-card" onclick="navigateTo('page-ulasim')">
+                    <div class="icon-box bg-blue"><i class="fa-solid fa-bus"></i></div>
+                    <span>Ulaşım</span>
+                </div>
+                <div class="grid-card" onclick="navigateTo('page-trafik')">
+                    <div class="icon-box bg-pink"><i class="fa-solid fa-traffic-light"></i></div>
+                    <span>Trafik</span>
+                </div>
+                <div class="grid-card" onclick="navigateTo('page-belediye')">
+                    <div class="icon-box bg-green"><i class="fa-solid fa-building-columns"></i></div>
+                    <span>Belediye Hizmetleri</span>
+                </div>
+                <div class="grid-card" onclick="navigateTo('page-gezilecek')">
+                    <div class="icon-box bg-purple"><i class="fa-solid fa-monument"></i></div>
+                    <span>Gezilecek Yerler</span>
+                </div>
+                <div class="grid-card" onclick="navigateTo('page-harita')">
+                    <div class="icon-box bg-cyan"><i class="fa-solid fa-map-location-dot"></i></div>
+                    <span>İnteraktif Harita</span>
+                </div>
+                <div class="grid-card full-card" onclick="navigateTo('page-acil')">
+                    <div class="icon-box bg-red"><i class="fa-solid fa-phone-volume"></i></div>
+                    <span>Acil İletişim</span>
+                </div>
+            </div>
+
+            <div class="list-menu" style="margin-top: 15px;">
+                <div class="list-card" onclick="navigateTo('page-hakkimda')">
+                    <div class="list-left">
+                        <div class="icon-box bg-indigo" style="width:32px; height:32px; font-size:14px;"><i class="fa-solid fa-circle-info"></i></div>
+                        <span>Hakkımda & Bilgi</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </div>
+            </div>
+
+            <div class="footer-text">İstanbul her zaman seninle</div>
+        </div>
+    </div>
+
+    <!-- ================= GÜNLÜK YAŞAM ================= -->
+    <div id="page-gunluk" class="page">
+        <div class="header-banner" style="background-image: url('https://images.unsplash.com/photo-1527838832700-548952014028?q=80&w=800');">
+            <div class="top-nav">
+                <div class="back-btn" onclick="navigateTo('page-home')"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="page-header-title"><i class="fa-solid fa-city" style="color: #f97316;"></i> Günlük Yaşam</div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="list-menu">
+                <a href="https://www.istanbuleczaneleri.org/" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-red"><i class="fa-solid fa-pills"></i></div>
+                        <span>Nöbetçi Eczane</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://www.google.com/maps/search/nöbetçi+eczane+istanbul" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-green"><i class="fa-solid fa-map-pin"></i></div>
+                        <span>Eczane Haritası</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://www.mgm.gov.tr/tahmin/il-ve-ilceler.aspx?m=ISTANBUL" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-blue"><i class="fa-solid fa-cloud-sun-rain"></i></div>
+                        <span>Detaylı Hava Durumu (MGM)</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://kultursanat.istanbul/" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-purple"><i class="fa-solid fa-masks-theater"></i></div>
+                        <span>Kültür Sanat Etkinlikleri</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ULAŞIM ================= -->
+    <div id="page-ulasim" class="page">
+        <div class="header-banner" style="background-image: url('https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=800');">
+            <div class="top-nav">
+                <div class="back-btn" onclick="navigateTo('page-home')"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="page-header-title"><i class="fa-solid fa-bus" style="color: #3b82f6;"></i> Ulaşım</div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="list-menu">
+                <a href="https://iett.istanbul/" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-orange"><i class="fa-solid fa-bus-simple"></i></div>
+                        <span>İETT Otobüs Saatleri</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://www.metro.istanbul/" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-blue"><i class="fa-solid fa-train-subway"></i></div>
+                        <span>Metro & Tramvay Hatları</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://www.sehirhatlari.istanbul/" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-cyan"><i class="fa-solid fa-ship"></i></div>
+                        <span>Şehir Hatları Vapur Seferleri</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://marmaray.gov.tr/" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-purple"><i class="fa-solid fa-train"></i></div>
+                        <span>Marmaray Sefer Saatleri</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://istanbulkart.istanbul/" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-green"><i class="fa-solid fa-credit-card"></i></div>
+                        <span>Toplu Taşıma Kartı (İstanbulkart)</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TRAFİK ================= -->
+    <div id="page-trafik" class="page">
+        <div class="header-banner" style="background-image: url('https://images.unsplash.com/photo-1506521781263-d8422e82f27a?q=80&w=800');">
+            <div class="top-nav">
+                <div class="back-btn" onclick="navigateTo('page-home')"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="page-header-title"><i class="fa-solid fa-traffic-light" style="color: #ec4899;"></i> Trafik</div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="list-menu">
+                <a href="https://uym.ibb.gov.tr/" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-pink"><i class="fa-solid fa-video"></i></div>
+                        <span>Canlı MOBESE / Kameralar</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://uym.ibb.gov.tr/yol-durumu/" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-red"><i class="fa-solid fa-map-location"></i></div>
+                        <span>İBB Yoğunluk Trafik Haritası</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://www.ibb.istanbul/duyurular" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-indigo"><i class="fa-solid fa-bullhorn"></i></div>
+                        <span>İBB Yol ve Ulaşım Duyuruları</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= BELEDİYE HİZMETLERİ ================= -->
+     <div id="page-belediye" class="page">
+        <div class="header-banner" style="background-image: url('https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=800');">
+            <div class="top-nav">
+                <div class="back-btn" onclick="navigateTo('page-home')"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="page-header-title"><i class="fa-solid fa-building-columns" style="color: #10b981;"></i> Belediye Hizmetleri</div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="list-menu">
+                <a href="https://www.turkiye.gov.tr/" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-red"><i class="fa-solid fa-lock"></i></div>
+                        <span>E-Devlet Giriş</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://gib.gov.tr/" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-green"><i class="fa-solid fa-receipt"></i></div>
+                        <span>Vergi & Ceza Sorgulama</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://www.hgsmusteri.ptt.gov.tr/" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-orange"><i class="fa-solid fa-car"></i></div>
+                        <span>HGS / OGS Bakiye Sorgulama</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://ispark.istanbul/" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-blue"><i class="fa-solid fa-square-p"></i></div>
+                        <span>İSPARK Otopark Sorgula</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= GEZİLECEK YERLER ================= -->
+    <div id="page-gezilecek" class="page">
+        <div class="header-banner" style="background-image: url('https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=800');">
+            <div class="top-nav">
+                <div class="back-btn" onclick="navigateTo('page-home')"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="page-header-title"><i class="fa-solid fa-monument" style="color: #a855f7;"></i> Gezilecek Yerler</div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="list-menu">
+                <!-- Avrupa Yakası -->
+                <a href="https://www.google.com/maps/search/Ayasofya-i+Kebir+Cami-i+Şerifi" target="_blank" class="list-card">
+                    <div class="list-left"><div class="icon-box bg-purple"><i class="fa-solid fa-mosque"></i></div><span>Ayasofya-i Kebir Cami</span></div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://www.google.com/maps/search/Topkapı+Sarayı" target="_blank" class="list-card">
+                    <div class="list-left"><div class="icon-box bg-purple"><i class="fa-solid fa-chess-rook"></i></div><span>Topkapı Sarayı</span></div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://www.google.com/maps/search/Dolmabahçe+Sarayı" target="_blank" class="list-card">
+                    <div class="list-left"><div class="icon-box bg-purple"><i class="fa-solid fa-archway"></i></div><span>Dolmabahçe Sarayı</span></div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://www.google.com/maps/search/Galata+Kulesi" target="_blank" class="list-card">
+                    <div class="list-left"><div class="icon-box bg-purple"><i class="fa-solid fa-gopuram"></i></div><span>Galata Kulesi</span></div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://www.google.com/maps/search/Yerebatan+Sarnıcı" target="_blank" class="list-card">
+                    <div class="list-left"><div class="icon-box bg-purple"><i class="fa-solid fa-water"></i></div><span>Yerebatan Sarnıcı</span></div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://www.google.com/maps/search/Miniatürk" target="_blank" class="list-card">
+                    <div class="list-left"><div class="icon-box bg-purple"><i class="fa-solid fa-landmark"></i></div><span>Miniatürk</span></div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://www.google.com/maps/search/Pierre+Loti" target="_blank" class="list-card">
+                    <div class="list-left"><div class="icon-box bg-purple"><i class="fa-solid fa-mountain"></i></div><span>Pierre Loti Tepesi</span></div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <!-- Anadolu Yakası -->
+                <a href="https://www.google.com/maps/search/Kız+Kulesi" target="_blank" class="list-card">
+                    <div class="list-left"><div class="icon-box bg-cyan"><i class="fa-solid fa-synagogue"></i></div><span>Kız Kulesi (Üsküdar)</span></div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://www.google.com/maps/search/Beylerbeyi+Sarayı" target="_blank" class="list-card">
+                    <div class="list-left"><div class="icon-box bg-cyan"><i class="fa-solid fa-building-columns"></i></div><span>Beylerbeyi Sarayı</span></div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://www.google.com/maps/search/Anadolu+Kavağı" target="_blank" class="list-card">
+                    <div class="list-left"><div class="icon-box bg-cyan"><i class="fa-solid fa-anchor"></i></div><span>Anadolu Kavağı & Yoros Kalesi</span></div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://www.google.com/maps/search/Çamlıca+Tepesi" target="_blank" class="list-card">
+                    <div class="list-left"><div class="icon-box bg-cyan"><i class="fa-solid fa-tree"></i></div><span>Büyük Çamlıca Tepesi</span></div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= İNTERAKTİF HARİTA ================= -->
+    <div id="page-harita" class="page">
+        <div class="top-nav" style="background: #0a1128;">
+            <div class="back-btn" onclick="navigateTo('page-home')"><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="page-header-title"><i class="fa-solid fa-map-location-dot" style="color: #06b6d4;"></i> İnteraktif Harita</div>
+        </div>
+        <div class="content">
+            <div id="map"></div>
+            <div class="list-menu">
+                <div class="list-card" onclick="alert('Konum izni verildikten sonra en yakın noktalar sıralanır.')">
+                    <div class="list-left">
+                        <div class="icon-box bg-cyan"><i class="fa-solid fa-location-crosshairs"></i></div>
+                        <span>Yakınımdakileri Bul</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ACİL İLETİŞİM ================= -->
+    <div id="page-acil" class="page">
+        <div class="header-banner" style="background-image: url('https://images.unsplash.com/photo-1587745416684-47953f16f02f?q=80&w=800');">
+            <div class="top-nav">
+                <div class="back-btn" onclick="navigateTo('page-home')"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="page-header-title"><i class="fa-solid fa-phone-volume" style="color: #ef4444;"></i> Acil İletişim</div>
+            </div>
+        </div>
+        <div class="content">
+            <p style="font-size: 12px; color:#94a3b8; text-align:center; margin-bottom:15px;">Acil durumlarda doğrudan aramak için numaralara dokunun.</p>
+            
+            <a href="tel:112" class="emergency-card">
+                <div>
+                    <div class="num">🚑 112</div>
+                    <div class="desc">Ambulans / Acil Çağrı Merkezi</div>
+                </div>
+                <i class="fa-solid fa-phone-flip" style="font-size: 20px;"></i>
+            </a>
+
+            <a href="tel:155" class="emergency-card">
+                <div>
+                    <div class="num">👮 155</div>
+                    <div class="desc">Polis İmdat</div>
+                </div>
+                <i class="fa-solid fa-phone-flip" style="font-size: 20px;"></i>
+            </a>
+
+            <a href="tel:110" class="emergency-card">
+                <div>
+                    <div class="num">🔥 110</div>
+                    <div class="desc">İtfaiye</div>
+                </div>
+                <i class="fa-solid fa-phone-flip" style="font-size: 20px;"></i>
+            </a>
+
+            <a href="tel:156" class="emergency-card">
+                <div>
+                    <div class="num">🚓 156</div>
+                    <div class="desc">Jandarma</div>
+                </div>
+                <i class="fa-solid fa-phone-flip" style="font-size: 20px;"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- ================= HAKKIMDA ================= -->
+    <div id="page-hakkimda" class="page">
+        <div class="top-nav" style="background: #0a1128;">
+            <div class="back-btn" onclick="navigateTo('page-home')"><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="page-header-title"><i class="fa-solid fa-circle-info" style="color: #6366f1;"></i> Hakkımda</div>
+        </div>
+        <div class="content" style="padding-top:10px;">
+            <div style="background: rgba(30, 41, 59, 0.6); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">
+                <h2 style="font-size: 20px; color: #38bdf8; margin-bottom: 10px;">İstanbul Sende</h2>
+                <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6; margin-bottom: 15px;">
+                    İstanbul Sende, kullanıcıların günlük ihtiyaç duyduğu bilgilere hızlı erişmesini sağlayan bağımsız bir platformdur. Resmi kurumların sunduğu hizmetlere tek noktadan ulaşım kolaylığı sağlar.
+                </p>
+                <h4 style="font-size: 14px; color: #fff; margin-bottom: 8px;">Avantajları:</h4>
+                <ul style="font-size: 13px; color: #94a3b8; padding-left: 20px; line-height: 1.8;">
+                    <li>Tek sayfadan hızlı erişim</li>
+                    <li>Zaman kazandırır</li>
+                    <li>Mobil uyumlu ve pratik kullanım</li>
+                    <li>Farklı hizmetleri tek yerde toplar</li>
+                    <li>Ücretsiz ve kolay erişilebilir</li>
+                </ul>
+                <div style="margin-top:20px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.1); font-size:11px; color:#64748b;">
+                    <strong>Bilgilendirme:</strong> Bu uygulama resmi bir kurum değildir. Resmi kurumlara ait hizmetlere yönlendirme yapar.<br><br>
+                    <strong>Geliştirici:</strong> ykocaman59
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Leaflet JavaScript (Harita Çalışması İçin) -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // --- SAYFA YÖNLENDİRME SİSTEMİ ---
+    function navigateTo(pageId) {
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active');
+        });
+        const targetPage = document.getElementById(pageId);
+        if (targetPage) {
+            targetPage.classList.add('active');
+            targetPage.scrollTop = 0;
+        }
+
+        // Harita sayfasına girildiyse haritayı yükle/yenile
+        if (pageId === 'page-harita') {
+            setTimeout(initMap, 200);
+        }
+    }
+
+    // --- LEAFLET İNTERAKTİF HARİTA KURULUMU ---
+    let mapInitialized = false;
+    let map;
+
+    // Anadolu ve Avrupa Yakasındaki Gezilecek Noktalar
+    const poiList = [
+        { name: "Ayasofya-i Kebir Cami", lat: 41.0086, lng: 28.9802 },
+        { name: "Topkapı Sarayı", lat: 41.0115, lng: 28.9833 },
+        { name: "Dolmabahçe Sarayı", lat: 41.0391, lng: 28.9983 },
+        { name: "Galata Kulesi", lat: 41.0256, lng: 28.9741 },
+        { name: "Yerebatan Sarnıcı", lat: 41.0084, lng: 28.9779 },
+        { name: "Miniatürk", lat: 41.0602, lng: 28.9488 },
+        { name: "Pierre Loti Tepesi", lat: 41.0535, lng: 28.9338 },
+        { name: "Kız Kulesi", lat: 41.0211, lng: 29.0041 },
+        { name: "Beylerbeyi Sarayı", lat: 41.0427, lng: 29.0415 },
+        { name: "Büyük Çamlıca Tepesi", lat: 41.0283, lng: 29.0662 },
+        { name: "Anadolu Kavağı", lat: 41.1731, lng: 29.0886 }
+    ];
+
+    function initMap() {
+        if (!mapInitialized) {
+            // İstanbul merkezli harita başlatma
+            map = L.map('map').setView([41.015137, 28.979530], 11);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            // Tüm gezilecek yerleri pinleme
+            poiList.forEach(poi => {
+                L.marker([poi.lat, poi.lng])
+                    .addTo(map)
+                    .bindPopup(`<b>${poi.name}</b><br><a href="https://www.google.com/maps/search/${encodeURIComponent(poi.name)}" target="_blank" style="color:#0284c7;">Yol Tarifi Al</a>`);
+            });
+
+            mapInitialized = true;
+        } else {
+            map.invalidateSize();
+        }
+    }
+</script>
+
+</body>
+</html>
