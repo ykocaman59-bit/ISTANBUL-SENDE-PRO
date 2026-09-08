@@ -519,7 +519,7 @@
     </div>
 
     <!-- ================= ULAŞIM ================= -->
-   <div id="page-ulasim" class="page">
+    <div id="page-ulasim" class="page">
         <div class="header-banner" style="background-image: url('https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=800');">
             <div class="top-nav">
                 <div class="back-btn" onclick="navigateTo('page-home')"><i class="fa-solid fa-chevron-left"></i></div>
@@ -799,7 +799,13 @@
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+<!-- Capacitor JS -->
+<script src="capacitor.js"></script>
+
 <script>
+    let activePageId = 'page-home';
+    let lastTimeBackButtonViaApp = 0;
+
     // --- KLAVYEDEN KOPYALAMA VE İNCELE KISAYOL ENGELLENMESİ ---
     document.addEventListener("keydown", function(e) {
         if (e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 'a' || e.key === 's')) {
@@ -812,6 +818,7 @@
 
     // --- SAYFA YÖNLENDİRME SİSTEMİ ---
     function navigateTo(pageId) {
+        activePageId = pageId;
         document.querySelectorAll('.page').forEach(page => {
             page.classList.remove('active');
         });
@@ -836,6 +843,40 @@
                 splash.classList.add('hidden');
             }
         }, 2200);
+    });
+
+    // --- CAPACITOR TELEFON GERİ TUŞU KONTROLÜ ---
+    document.addEventListener('deviceready', () => {
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+            const { App, Toast } = window.Capacitor.Plugins;
+
+            App.addListener('backButton', async () => {
+                // Eğer kullanıcı ana sayfada değilse, önce ana sayfaya döndür
+                if (activePageId !== 'page-home') {
+                    navigateTo('page-home');
+                    return;
+                }
+
+                // Ana sayfadaysa çift basma kontrolü yap
+                const currentTime = new Date().getTime();
+
+                // 2000 milisaniye (2 saniye) içinde tekrar basılırsa uygulamadan çık
+                if (currentTime - lastTimeBackButtonViaApp < 2000) {
+                    App.exitApp();
+                } else {
+                    lastTimeBackButtonViaApp = currentTime;
+
+                    // Instagram tarzı Toast bildirimi
+                    if (Toast) {
+                        await Toast.show({
+                            text: 'Çıkmak için tekrar geri basın',
+                            duration: 'short',
+                            position: 'bottom'
+                        });
+                    }
+                }
+            });
+        }
     });
 
     // --- LEAFLET İNTERAKTİF HARİTA KURULUMU ---
@@ -880,3 +921,4 @@
 
 </body>
 </html>
+        
