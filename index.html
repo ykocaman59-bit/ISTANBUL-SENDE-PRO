@@ -49,6 +49,84 @@
             }
         }
 
+        /* --- AÇILIŞ ANİMASYONU (SPLASH SCREEN) --- */
+        #splash-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #0f172a 0%, #030712 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s ease-out, visibility 0.6s;
+        }
+
+        #splash-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .splash-logo-box {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(168, 85, 247, 0.2));
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+            margin-bottom: 20px;
+            animation: pulseGlow 2s infinite alternate;
+        }
+
+        .splash-logo-box i {
+            font-size: 48px;
+            color: #38bdf8;
+            filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
+        }
+
+        .splash-title {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            margin-bottom: 6px;
+        }
+
+        .splash-subtitle {
+            font-size: 12px;
+            color: #94a3b8;
+            letter-spacing: 1px;
+        }
+
+        .splash-loader {
+            margin-top: 35px;
+            width: 28px;
+            height: 28px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #38bdf8;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
+            100% { box-shadow: 0 0 40px rgba(168, 85, 247, 0.5); }
+        }
+
         /* --- SAYFA YAPISI --- */
         .page {
             position: absolute;
@@ -293,18 +371,44 @@
             filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3);
         }
 
-        .footer-text {
+        /* --- BİLGİLENDİRME & FOOTER ALANI --- */
+        .footer-info-box {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
             text-align: center;
-            font-size: 11px;
-            color: #475569;
-            margin-top: 15px;
-            padding-bottom: 10px;
+        }
+
+        .footer-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #38bdf8;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-notice {
+            font-size: 10px;
+            color: #64748b;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
 
 <div class="app-container">
+
+    <!-- ================= AÇILIŞ EKRANI (SPLASH SCREEN) ================= -->
+    <div id="splash-screen">
+        <div class="splash-logo-box">
+            <i class="fa-solid fa-gopuram"></i>
+        </div>
+        <div class="splash-title">İSTANBUL SENDE</div>
+        <div class="splash-subtitle">Şehrin Rehberi Yanında</div>
+        <div class="splash-loader"></div>
+    </div>
 
     <!-- ================= ANA SAYFA ================= -->
     <div id="page-home" class="page active">
@@ -357,7 +461,13 @@
                 </div>
             </div>
 
-            <div class="footer-text">İstanbul her zaman seninle</div>
+            <!-- GÜNCELLENEN METİN VE DİSCLAIMER ALANI -->
+            <div class="footer-info-box">
+                <div class="footer-title">İstanbul her zaman sende</div>
+                <div class="footer-notice">
+                    <strong>Önemli Bilgilendirme:</strong> Bu web sitesi hiçbir kamu kurum veya kuruluşu ile resmi bağı bulunmayan, bağımsız bir açık kaynak yönlendirme rehberidir. Sitedeki bağlantılar kullanıcıları doğrudan ilgili kurumların resmi adreslerine ulaştırır.
+                </div>
+            </div>
         </div>
     </div>
 
@@ -371,7 +481,6 @@
         </div>
         <div class="content">
             <div class="list-menu">
-                <!-- Sultanbeyli Nöbetçi Eczane Bağlantısı -->
                 <a href="https://www.eczaneler.gen.tr/nobetci-istanbul-sultanbeyli" target="_blank" class="list-card">
                     <div class="list-left">
                         <div class="icon-box bg-red"><i class="fa-solid fa-pills"></i></div>
@@ -405,7 +514,7 @@
     </div>
 
     <!-- ================= ULAŞIM ================= -->
-    <div id="page-ulasim" class="page">
+<div id="page-ulasim" class="page">
         <div class="header-banner" style="background-image: url('https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=800');">
             <div class="top-nav">
                 <div class="back-btn" onclick="navigateTo('page-home')"><i class="fa-solid fa-chevron-left"></i></div>
@@ -435,7 +544,6 @@
                     </div>
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </a>
-                <!-- Marmaray Saatleri Güncellendi -->
                 <a href="https://marmaray.istanbul/marmaray-saatleri/" target="_blank" class="list-card">
                     <div class="list-left">
                         <div class="icon-box bg-purple"><i class="fa-solid fa-train"></i></div>
@@ -464,7 +572,6 @@
         </div>
         <div class="content">
             <div class="list-menu">
-                <!-- MOBESE Kameralar Güncellendi -->
                 <a href="https://uym.ibb.gov.tr/yharita6/" target="_blank" class="list-card">
                     <div class="list-left">
                         <div class="icon-box bg-pink"><i class="fa-solid fa-video"></i></div>
@@ -472,7 +579,6 @@
                     </div>
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </a>
-                <!-- İBB Yoğunluk Trafik Haritası Güncellendi -->
                 <a href="https://istanbul.yogunlukharitasi.com/" target="_blank" class="list-card">
                     <div class="list-left">
                         <div class="icon-box bg-red"><i class="fa-solid fa-map-location"></i></div>
@@ -480,7 +586,6 @@
                     </div>
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </a>
-                <!-- İBB Yol ve Ulaşım Duyuruları Güncellendi -->
                 <a href="https://ibb.istanbul/gundem/duyurular/" target="_blank" class="list-card">
                     <div class="list-left">
                         <div class="icon-box bg-indigo"><i class="fa-solid fa-bullhorn"></i></div>
@@ -516,7 +621,6 @@
                     </div>
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </a>
-                <!-- HGS / OGS Bakiye Sorgulama Güncellendi -->
                 <a href="https://hgsmusteri.ptt.gov.tr/mobil/hgs.jsf" target="_blank" class="list-card">
                     <div class="list-left">
                         <div class="icon-box bg-orange"><i class="fa-solid fa-car"></i></div>
@@ -707,9 +811,17 @@
         }
     }
 
-    // İlk yüklemede Ana Sayfayı Aç (404 / Boş ekran hatasını çözer)
+    // --- AÇILIŞ ANİMASYONU SÜRESİ VE BAŞLANGIÇ ---
     document.addEventListener("DOMContentLoaded", function() {
         navigateTo('page-home');
+
+        // 2.2 Saniye sonra açılış ekranını kaldırır
+        setTimeout(function() {
+            const splash = document.getElementById('splash-screen');
+            if(splash) {
+                splash.classList.add('hidden');
+            }
+        }, 2200);
     });
 
     // --- LEAFLET İNTERAKTİF HARİTA KURULUMU ---
@@ -753,5 +865,4 @@
 </script>
 
 </body>
-</html>
-                 
+    </html>
