@@ -363,6 +363,7 @@
         .bg-cyan   { background: linear-gradient(135deg, #06b6d4, #0891b2); }
         .bg-red    { background: linear-gradient(135deg, #ef4444, #dc2626); }
         .bg-indigo { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+        .bg-yellow { background: linear-gradient(135deg, #eab308, #ca8a04); }
 
         #map {
             width: 100%;
@@ -435,6 +436,10 @@
                     <div class="icon-box bg-blue"><i class="fa-solid fa-bus"></i></div>
                     <span>Ulaşım</span>
                 </div>
+                <div class="grid-card" onclick="navigateTo('page-duyurular')">
+                    <div class="icon-box bg-yellow"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <span>Duyurular & Kesintiler</span>
+                </div>
                 <div class="grid-card" onclick="navigateTo('page-trafik')">
                     <div class="icon-box bg-pink"><i class="fa-solid fa-traffic-light"></i></div>
                     <span>Trafik</span>
@@ -500,6 +505,20 @@
                     </div>
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </a>
+                <a href="https://www.belnet.bel.tr/sosyal-tesislerimiz" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-orange"><i class="fa-solid fa-utensils"></i></div>
+                        <span>İBB Sosyal Tesisler Rehberi</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://istanbulkart.istanbul/" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-cyan"><i class="fa-solid fa-map-location-dot"></i></div>
+                        <span>İstanbulkart Dolum / Biletmatik Noktaları</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
                 <a href="https://www.mgm.gov.tr/tahmin/il-ve-ilceler.aspx?m=ISTANBUL" target="_blank" class="list-card">
                     <div class="list-left">
                         <div class="icon-box bg-blue"><i class="fa-solid fa-cloud-sun-rain"></i></div>
@@ -560,6 +579,41 @@
                     <div class="list-left">
                         <div class="icon-box bg-green"><i class="fa-solid fa-credit-card"></i></div>
                         <span>Toplu Taşıma Kartı (İstanbulkart)</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= DUYURULAR & KESİNTİLER ================= -->
+    <div id="page-duyurular" class="page">
+        <div class="header-banner" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');">
+            <div class="top-nav">
+                <div class="back-btn" onclick="navigateTo('page-home')"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="page-header-title"><i class="fa-solid fa-triangle-exclamation" style="color: #eab308;"></i> Duyurular & Kesintiler</div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="list-menu">
+                <a href="https://www.iski.istanbul/tr-TR/ariza-ve-kesintiler" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-blue"><i class="fa-solid fa-faucet-drip"></i></div>
+                        <span>İSKİ Su Kesintileri ve Arızalar</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://www.bedas.com.tr/tr/ariza-ve-planli-kesintiler" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-orange"><i class="fa-solid fa-bolt"></i></div>
+                        <span>BEDAŞ / AYEDAŞ Elektrik Kesintileri</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="https://www.sehirhatlari.istanbul/tr/duyurular/iptal-edilen-seferler-43" target="_blank" class="list-card">
+                    <div class="list-left">
+                        <div class="icon-box bg-red"><i class="fa-solid fa-ship"></i></div>
+                        <span>İDO / Şehir Hatları İptal Seferler</span>
                     </div>
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </a>
@@ -784,7 +838,7 @@
                     <li>Zaman kazandırır</li>
                     <li>Mobil uyumlu ve pratik kullanım</li>
                     <li>Farklı hizmetleri tek yerde toplar</li>
-                    <li>Ücretsiz ve kolay erişilebilir</li>
+                    <li>Ücretsiz danışmanlık</li>
                 </ul>
                 <div style="margin-top:20px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.1); font-size:11px; color:#64748b;">
                     <strong>Bilgilendirme:</strong> Bu uygulama resmi bir kurum değildir. Resmi kurumlara ait hizmetlere yönlendirme yapar.<br><br>
@@ -921,4 +975,3 @@
 
 </body>
 </html>
-        
